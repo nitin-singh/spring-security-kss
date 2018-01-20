@@ -5,9 +5,17 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+
+
+    @Autowired
+    AuthenticationSuccess authenticationSuccess;
+
+    @Autowired
+    LogoutSuccess logoutSuccess;
 
     @Autowired
     public void configureAuth(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -24,6 +32,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.authorizeRequests()
                 .antMatchers("/").hasRole("ADMIN")
                 .anyRequest().authenticated()
-                .and().formLogin().permitAll().successForwardUrl("/home");
+                .and().formLogin().successHandler(authenticationSuccess).loginPage("/login").permitAll()
+                .loginProcessingUrl("/loginUrl")
+                .and()
+                .logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/doLogout", "GET")).logoutSuccessHandler(logoutSuccess)
+                .and().csrf().disable();
     }
 }
