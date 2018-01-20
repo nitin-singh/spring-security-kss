@@ -1,6 +1,7 @@
 package com.springmvc.controller;
 
 
+import com.springmvc.entity.User;
 import com.springmvc.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +27,17 @@ public class HomeController {
 
     @RequestMapping(value = "/login")
     public String login() {
+        return "login";
+    }
+
+    @RequestMapping(value = "/register")
+    public String register(){
+        return "register";
+    }
+
+    @RequestMapping("/registerUser")
+    public String registerUser(User user){
+        userRepository.save(user);
         return "login";
     }
 
